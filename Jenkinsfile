@@ -12,6 +12,17 @@ environment{
             steps{
                 sh 'mvn clean deploy'
             }
-        }        
+        }
+
+        stage('SonarQube analysis') {
+            environment {
+                scannerHome = tool 'miniproject-sonar-scanner'
+            }
+            steps {
+                withSonarQubeEnv('miniproject-sonarqube-server') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+            }
+        }
     }
 }
