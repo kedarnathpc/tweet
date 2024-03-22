@@ -30,7 +30,7 @@ environment{
             }
             steps {
                 withSonarQubeEnv('miniproject-sonarqube-server') {
-                    sh "${scannerHome}/bin/sonar-scanner"
+                    sh "${scannerHome}/bin/sonar-scanner -X"
                 }
             }
         }
