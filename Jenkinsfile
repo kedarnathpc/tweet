@@ -1,3 +1,7 @@
+def registry = 'https://miniproject3.jfrog.io'
+def imageName = 'miniproject3.jfrog.io/miniproject3-docker-local/ttrend'
+def version   = '2.1.2'
+
 pipeline {
     agent {
         node {
@@ -31,6 +35,28 @@ environment{
             steps {
                 withSonarQubeEnv('miniproject-sonarqube-server') {
                     sh "${scannerHome}/bin/sonar-scanner -X"
+                }
+            }
+        }
+
+        stage(" Docker Build ") {
+            steps {
+                script {
+                echo '<--------------- Docker Build Started --------------->'
+                app = docker.build(imageName+":"+version)
+                echo '<--------------- Docker Build Ends --------------->'
+                }
+            }
+        }
+
+        stage (" Docker Publish "){
+            steps {
+                script {
+                echo '<--------------- Docker Publish Started --------------->'  
+                    docker.withRegistry(registry, 'artifact-cred'){
+                        app.push()
+                    }    
+                echo '<--------------- Docker Publish Ended --------------->'  
                 }
             }
         }
